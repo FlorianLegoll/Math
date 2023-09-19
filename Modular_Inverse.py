@@ -1,62 +1,35 @@
-def extended_gcd(a, m):
-    # Initialisierung der Anfangswerte
-    x0, x1, y0, y1 = 1, 0, 0, 1
-    while m != 0:
-        # Berechnung des Quotienten und Rests
-        quotient, a, m = a // m, m, a % m
-        # Aktualisierung der Bézout-Koeffizienten
-        x0, x1 = x1, x0 - quotient * x1
-        y0, y1 = y1, y0 - quotient * y1
+# Die Funktion extended_gcd implementiert den erweiterten euklidischen Algorithmus.
+# Sie berechnet den größten gemeinsamen Teiler (gcd) von a und b sowie die Koeffizienten x und y
+# für die Darstellung des gcd als lineare Kombination von a und b.
 
-    # x0 ist das modulare Inverse von a modulo b
-    return x0
+def extended_gcd(a, b):
+    if a == 0:
+        # Wenn a gleich 0 ist, ist der gcd b und die Koeffizienten x=0 und y=1.
+        return (b, 0, 1)
+    else:
+        # Andernfalls führen wir den erweiterten euklidischen Algorithmus rekursiv aus.
+        # Der Rückgabewert ist (gcd, x, y), wobei gcd der größte gemeinsame Teiler ist,
+        # x und y die Koeffizienten sind, die die Gleichung gcd = ax + by erfüllen.
+        gcd, x, y = extended_gcd(b % a, a)
+        if gcd == 1:
+             print(f"Schritt: gcd({b}, {a}) => gcd = {gcd}, x = {x}, y = {y}")
+        return (gcd, y - (b // a) * x, x)
 
+# Die Funktion modular_inverse berechnet das modulare Inverse von a modulo m.
 def modular_inverse(a, m):
-    # Berechnung des GCD von a und m
-    gcd = extended_gcd(a, m)
-    
-    # Überprüfung, ob a und m teilerfremd sind (GCD(a, m) = 1)
+    # Wir rufen die extended_gcd-Funktion auf, um gcd und die Koeffizienten x und y zu erhalten.
+    gcd, x, y = extended_gcd(a, m)
     if gcd != 1:
-        raise ValueError("Das modulare Inverse existiert nicht, da a und m nicht teilerfremd sind.")
-    
-    # Berechnung des modularen Inversen
-    inverse = (extended_gcd(a, m) % m + m) % m
-    
-    return inverse
+        # Wenn gcd nicht 1 ist, gibt es kein modulares Inverse.
+        raise ValueError("Das modulare Inverse existiert nicht.")
+    else:
+        # Andernfalls berechnen wir das modulare Inverse von a modulo m.
+        # Das modulare Inverse ist (x % m + m) % m, um sicherzustellen, dass das Ergebnis positiv ist.
+        return (x % m + m) % m
 
-# Beispielaufruf
-a = 3
+# Aufruf
+a = 8
 m = 11
 inverse = modular_inverse(a, m)
-print(f"Das modulare Inverse von {a} modulo {m} ist {inverse}")
-def extended_gcd(a, m):
-    # Initialisierung der Anfangswerte
-    x0, x1, y0, y1 = 1, 0, 0, 1
-    while m != 0:
-        # Berechnung des Quotienten und Rests
-        quotient, a, m = a // m, m, a % m
-        # Aktualisierung der Bézout-Koeffizienten
-        x0, x1 = x1, x0 - quotient * x1
-        y0, y1 = y1, y0 - quotient * y1
-
-    # x0 ist das modulare Inverse von a modulo b
-    return x0
-
-def modular_inverse(a, m):
-    # Berechnung des GCD von a und m
-    gcd = extended_gcd(a, m)
-    
-    # Überprüfung, ob a und m teilerfremd sind (GCD(a, m) = 1)
-    if gcd != 1:
-        raise ValueError("Das modulare Inverse existiert nicht, da a und m nicht teilerfremd sind.")
-    
-    # Berechnung des modularen Inversen
-    inverse = (extended_gcd(a, m) % m + m) % m
-    
-    return inverse
-
-# Beispielaufruf
-a = 3
-m = 11
-inverse = modular_inverse(a, m)
+# Wir geben das gefundene modulare Inverse aus.
 print(f"Das modulare Inverse von {a} modulo {m} ist {inverse}")
